@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./public/style.css" />
+    <title>Pokemon Memory Game - MVC</title>
+</head>
+<body>
+    <div id="app">
+        <div id="login-screen">
+            <div class="login-box">
+                <h2>Chào mừng bạn đến với trò chơi</h2>
+                <input type="text" id="username" placeholder="Nhập tên người chơi..." />
+                <p id="error-message"></p>
+                <button id="start-btn">BẮT ĐẦU TRÒ CHƠI</button>
+            </div>
+        </div>
+
+        <div id="player-stats-container">
+            <div class="stat-card">
+                <span class="label">Người chơi</span>
+                <span id="current-player" class="value">---</span>
+            </div>
+            <div class="stat-card highlight">
+                <span class="label">Điểm số</span>
+                <span id="score" class="value">0</span>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button id="cancel-btn" class="control-btn">Hủy</button>
+            <button id="reset-btn" class="control-btn">Reset</button>
+        </div>
+
+        <div class="pokemonWrapper"></div>
+    </div>
+
+    <script type="module" src="./build/index.js"></script>
+</body>
+</html>
