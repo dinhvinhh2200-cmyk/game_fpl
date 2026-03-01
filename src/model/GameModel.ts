@@ -7,6 +7,10 @@ export namespace AppMemoryGame {
     export interface IPokemonData {
         id: number;
         name: string;
+        sprites: {
+            front_default: string;
+            // Bạn có thể thêm các kiểu khác nếu cần
+        };
     }
 
     // 2. Intersection Type

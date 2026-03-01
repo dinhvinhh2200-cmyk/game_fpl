@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "es6",
-    "experimentalDecorators": true, // Kích hoạt tính năng Decorator
-    "emitDecoratorMetadata": true,   // Cho phép lưu trữ thông tin kiểu dữ liệu cho Decorator
-    "outDir": "./build",
-    "strict": true,
-    "esModuleInterop": true
+    "moduleResolution": "node", // Chỉnh lại thành node
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "target": "ES6",
+    "module": "ESNext"
   }
 }
