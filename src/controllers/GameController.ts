@@ -28,14 +28,38 @@ export namespace AppMemoryGame {
 
         protected initEvents(): void {
             document.querySelector('#start-btn')?.addEventListener('click', () => this.startGame());
+            // Nút Hủy (Quay lại đăng nhập)
+            document.querySelector('#cancel-btn')?.addEventListener('click', () => this.cancelGame());
+
+            // Nút Reset (Chơi lại từ đầu)
+            document.querySelector('#reset-btn')?.addEventListener('click', () => this.resetGame());
         }
 
         // 9. Sử dụng Decorator
+
+        @LogAction
+        public cancelGame(): void {
+            this.model.resetState(); // Reset dữ liệu trong model
+            this.view.updateScore(0); // Reset điểm trên giao diện
+            this.view.showLoginScreen(); // Hiện lại màn hình login
+        }
+
+        @LogAction
+        public async resetGame(): Promise<void> {
+            // Reset logic tương tự startGame nhưng không ẩn màn hình login (vì đang ở trong game)
+            this.model.resetState();
+            this.view.updateScore(0);
+            const pokemons = await this.model.fetchPokemons();
+            this.view.renderCards(pokemons, (card) => this.handleFlip(card));
+        }
+
         @LogAction
         public async startGame(): Promise<void> {
             try {
                 const name = (document.querySelector('#username') as HTMLInputElement).value;
                 this.validateName(name);
+
+                this.view.updatePlayerName(name);
 
                 this.model.resetState();
                 const pokemons = await this.model.fetchPokemons();

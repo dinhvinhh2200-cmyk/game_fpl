@@ -8,6 +8,8 @@ export namespace AppMemoryGame {
         // Truy vấn các phần tử giao diện cần thiết
         private wrapper = document.querySelector('.pokemonWrapper') as HTMLElement;
         private scoreEl = document.querySelector('#score') as HTMLElement;
+        private playerEl = document.querySelector('#current-player') as HTMLElement;
+        private loginScreen = document.querySelector('#login-screen') as HTMLElement;
         /**
          * Render danh sách các thẻ bài Pokemon lên màn hình
          * @param data Danh sách chi tiết Pokemon (IPokemonDetail) từ Model
@@ -35,9 +37,32 @@ export namespace AppMemoryGame {
          * Cập nhật điểm số hiện tại lên giao diện
          * @param score Giá trị điểm số từ Model
          */
+
+        // Hiển thị lại màn hình đăng nhập
+        public showLoginScreen(): void {
+            if (this.loginScreen) {
+                this.loginScreen.style.display = 'flex'; // Hoặc 'block' tùy CSS của bạn
+            }
+            if (this.wrapper) {
+                this.wrapper.innerHTML = ''; // Xóa sạch các thẻ bài cũ
+            }
+        }
+
+        // Ẩn màn hình đăng nhập
+        public hideLoginScreen(): void {
+            if (this.loginScreen) {
+                this.loginScreen.style.display = 'none';
+            }
+        }
+
         public updateScore(score: number): void {
             if (this.scoreEl) {
                 this.scoreEl.textContent = score.toString();
+            }
+        }
+        public updatePlayerName(name: string): void {
+            if (this.playerEl) {
+                this.playerEl.textContent = name;
             }
         }
         /**
