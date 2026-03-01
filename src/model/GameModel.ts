@@ -1,61 +1,59 @@
+import "reflect-metadata";
+import { plainToInstance } from "class-transformer";
+import { IsString, IsInt, validate } from "class-validator";
+import _ from "lodash"; // Sử dụng Lodash
+
 export namespace AppMemoryGame {
-    /**
-     * Lớp trừu tượng cơ sở cho các loại trò chơi
-     * Quản lý các thuộc tính chung như điểm số
-     */
-    abstract class BaseModel {
-        public score: number = 0;
-        // Phương thức trừu tượng bắt buộc các lớp con phải có logic reset riêng
-        public abstract resetState(): void;
-        // Phương thức dùng chung để cập nhật điểm
-        public updateScore(points: number): void {
-            this.score += points;
-        }
-    }
-    /**
-     * Interface định nghĩa cấu trúc dữ liệu Pokemon từ API
-     */
-    export interface IPokemonDetail {
+    // 1. Interface
+    export interface IPokemonData {
         id: number;
         name: string;
-        sprites: { front_default: string };
     }
-    /**
-     * GameModel kế thừa từ BaseModel
-     * Sử dụng 'extends' để tái sử dụng logic quản lý điểm số
-     */
-    export class GameModel extends BaseModel {
+
+    // 2. Intersection Type: Kết hợp dữ liệu API và hình ảnh
+    export type PokemonEntity = IPokemonData & { sprites: { front_default: string } };
+
+    // 3. Class & Class Validator: Định nghĩa Model chuẩn hóa
+    export class Pokemon {
+        @IsInt() id!: number;
+        @IsString() name!: string;
+        sprites!: { front_default: string };
+    }
+
+    // 4. Generic & Inheritance: Lớp cơ sở dùng Generic
+    abstract class BaseModel<T> {
+        public score: number = 0;
+        public abstract items: T[];
+        public updateScore(points: number): void { this.score += points; }
+    }
+
+    export class GameModel extends BaseModel<Pokemon> {
+        public items: Pokemon[] = [];
         public matchedCount: number = 0;
         public readonly totalPairs: number = 10;
-        private apiUrl: string = 'https://pokeapi.co/api/v2/pokemon?limit=10';
-        /**
-         * Lấy dữ liệu từ PokeAPI và chuẩn bị danh sách thẻ bài
-         */
-        public async fetchPokemons(): Promise<IPokemonDetail[]> {
-            try {
-                const res = await fetch(this.apiUrl);
-                if (!res.ok) throw new Error("Lỗi kết nối API");
-                const data = await res.json();
-                // Nhân đôi danh sách kết quả để tạo thành các cặp thẻ bài giống nhau
-                const doubleData = [...data.results, ...data.results];
-                // Gọi chi tiết từng Pokemon để lấy hình ảnh (sprites)
-                const promises = doubleData.map(p =>
-                    fetch(`https://pokeapi.co/api/v2/pokemon/${p.name}`).then(r => r.json())
-                );
-                const pokemonArr = await Promise.all(promises);
-                // Trộn ngẫu nhiên vị trí các thẻ bài bằng thuật toán sort đơn giản
-                return pokemonArr.sort(() => Math.random() - 0.5);
-            } catch (error) {
-                console.error("Lỗi lấy dữ liệu từ API:", error);
-                return [];
-            }
+
+        // 5. Sử dụng Generic trong Method và Lodash để trộn
+        public async fetchPokemons(): Promise<Pokemon[]> {
+            const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
+            const data = await res.json();
+            
+            // Nhân đôi mảng
+            const rawData = [...data.results, ...data.results];
+            
+            const promises = rawData.map(p => 
+                fetch(`https://pokeapi.co/api/v2/pokemon/${p.name}`).then(r => r.json())
+            );
+            const results = await Promise.all(promises);
+
+            // 6. Class Transformer: Chuyển đổi dữ liệu thô sang Class Instance
+            this.items = results.map(item => plainToInstance(Pokemon, item));
+
+            // 7. Lodash: Sử dụng _.shuffle thay vì sort ngẫu nhiên
+            return _.shuffle(this.items);
         }
-        /**
-         * Triển khai phương thức resetState từ lớp cha
-         * Đưa điểm số và số cặp đã khớp về giá trị ban đầu
-         */
+
         public resetState(): void {
-            this.score = 0; // Thuộc tính kế thừa từ BaseModel
+            this.score = 0;
             this.matchedCount = 0;
         }
     }
