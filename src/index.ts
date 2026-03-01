@@ -1,4 +1,5 @@
 // Import các namespace từ các file thành phần
+import "reflect-metadata";
 import { AppMemoryGame as M } from "./model/GameModel.js";
 import { AppMemoryGame as V } from "./views/GameView.js";
 import { AppMemoryGame as C } from "./controllers/GameController.js";
