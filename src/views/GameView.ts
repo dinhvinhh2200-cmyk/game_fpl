@@ -15,7 +15,7 @@ export namespace AppMemoryGame {
          * @param data Danh sách chi tiết Pokemon (IPokemonDetail) từ Model
          * @param handleFlip Hàm callback xử lý sự kiện lật thẻ truyền từ Controller
          */
-        public renderCards(data: M.IPokemonData[], handleFlip: (card: HTMLElement) => void): void {
+        public renderCards(data: M.PokemonEntity[], handleFlip: (card: HTMLElement) => void): void {
             if (!this.wrapper) return;
             // Tạo cấu trúc HTML cho từng thẻ bài
             this.wrapper.innerHTML = data.map((p) => `
